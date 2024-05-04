@@ -3,11 +3,11 @@
 
 table territory {
   id uuid [pk]
-  superior_id uuid [ref: -territory.id]
+  superior_id uuid [ref: - territory.id]
 }
 
 table gv100ad {
-  id uuid [pk, ref: -territory.id]  
+  id uuid [ pk, ref: - territory.id]  
   bundesland char(2) [not null]
   regierungsbezirk char(1) [not null]
   landkreis char(2) [not null]
@@ -15,8 +15,9 @@ table gv100ad {
   gemeinde char(3) [not null]
   ars char(12) [unique, not null]
   ags char(8) [unique, not null]
-  satz text [not null, ref:- gv100ad_satzart.number]
-  art text [not null, ref:- gv100ad_satzart.number]
+  satz text [not null, ref: - gv100ad_satzart.number]
+  art text [not null, ref: - gv100ad_satzart.number]
+  gebietsstand char(8) [not null]
 }
 
 table gv100ad_satzart {
@@ -36,24 +37,26 @@ table postcode {
   number varchar(20) [unique, not null]
 }
 
+table user{
+  id uuid [pk]
+  stripe_id text
+}
+
 table donation {
   id uuid [pk]
   user_id uuid [not null, ref: - user.id]
   fund_id uuid [not null, ref: - fund.id]
   //needed for gv100ad changes of type 2 (Teilausgliederung)
-  postcode varchar(20) [not null, ref: - postcode.number]
+  postcode varchar(20) [ref: - postcode.number]
   amount int [not null]
   org_percentage int [not null] //default 10
+  created_at timestamp [not null] //default now()
 }
+
 
 // add computed table territory_postcode for quicker lookup of funds by postcode
 table gv10ad_postcode{
     id uuid [pk]
-    postcode varchar(20) [not null, ref:-postcode.number]
-    ars char(12) [not null, ref:-gv100ad.ars]
-}
-
-table user{
-  id uuid [pk]
-  stripe_id text
+    postcode varchar(20) [not null, ref: - postcode.number]
+    ars char(12) [not null, ref: - gv100ad.ars]
 }
