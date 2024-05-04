@@ -30,3 +30,21 @@ Might go for to self hosted postgres later.
 [GitHub Actions]()<br>
 Changes are currently applied to databases via github actions on push/merge to test and main branch. 
 
+## LOCAL DEVELOPMENT
+
+### docker postgres
+
+Setup a local postgres database via [docker](https://www.docker.com/blog/how-to-use-the-postgres-docker-official-image/). 
+
+```shell
+docker run --name persistence.klimaschutz.plus -e POSTGRES_USER={user} -e POSTGRES_PASSWORD={password} -e POSTGRES_DB={database} -p 5432:5432 -d postgres
+```
+
+and create a .env file for dbmate
+```shell
+DATABASE_URL=postgres://{user}:{password}@localhost:5432/{database}
+```
+and apply exiting migartions to database
+```
+dbmate migrate 
+```
