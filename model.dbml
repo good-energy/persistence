@@ -1,0 +1,53 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+table territory {
+  id uuid [pk]
+  superior_id uuid [ref: -territory.id]
+}
+
+table gv100ad {
+  id uuid [pk, ref: -territory.id]  
+  bundesland char(2) [not null]
+  regierungsbezirk char(1) [not null]
+  landkreis char(2) [not null]
+  verband char(4) [not null]
+  gemeinde char(3) [not null]
+  ars char(12) [unique, not null]
+  ags char(8) [unique, not null]
+  satz text [not null, ref:- gv100ad_satzart.number]
+  art text [not null, ref:- gv100ad_satzart.number]
+}
+
+table gv100ad_satzart {
+  id uuid [pk]
+  number int [unique]
+  name text
+}
+
+table fund {
+  id uuid [pk]
+  name text [unique, not null]
+  territory_id uuid [ref: - territory.id]
+}
+
+table postcode {
+  id uuid [pk]
+  number varchar(20) [unique, not null]
+}
+
+table donation {
+  id uuid [pk]
+  fund_id uuid [not null, ref: - fund.id]
+  //needed for gv100ad changes of type 2 (Teilausgliederung)
+  postcode varchar(20) [not null, ref: - postcode.number]
+  amount int [not null]
+  org_percentag int [not null] //default 10
+}
+
+// add computed table territory_postcode for quicker lookup of funds by postcode
+table gv10ad_postcode{
+    id uuid [pk]
+    postcode varchar(20) [not null, ref:-postcode.number]
+    ars char(12) [not null, ref:-gv100ad.ars]
+}
