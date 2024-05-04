@@ -1,0 +1,15 @@
+on:
+  push:
+    branches:
+      - test
+      - main
+jobs:
+  database_migration:
+    environment: ${{ github.head_ref || github.ref_name }} 
+    runs-on: ubuntu-latest
+    name: Database Migration
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: "Apply changes to database"
+        run: npx dbmate --url ${{ secrets.NEON_DATABASE_URL }} migrate 
