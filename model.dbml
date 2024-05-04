@@ -38,11 +38,12 @@ table postcode {
 
 table donation {
   id uuid [pk]
+  user_id uuid [not null, ref: - user.id]
   fund_id uuid [not null, ref: - fund.id]
   //needed for gv100ad changes of type 2 (Teilausgliederung)
   postcode varchar(20) [not null, ref: - postcode.number]
   amount int [not null]
-  org_percentag int [not null] //default 10
+  org_percentage int [not null] //default 10
 }
 
 // add computed table territory_postcode for quicker lookup of funds by postcode
@@ -50,4 +51,9 @@ table gv10ad_postcode{
     id uuid [pk]
     postcode varchar(20) [not null, ref:-postcode.number]
     ars char(12) [not null, ref:-gv100ad.ars]
+}
+
+table user{
+  id uuid [pk]
+  stripe_id text
 }
